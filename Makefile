@@ -49,10 +49,10 @@ CPPFLAGS += ${patsubst %,-I%,${subst :, ,${IPATH}}}
 
 LDFLAGS = ${shell pkg-config --libs IL 2>/dev/null}
 LDFLAGS += -lpthread -lutil -ldl
-LDFLAGS += -lm
 LDFLAGS += -Wl,-rpath $(LIBC3)/${OBJ}/.libs -L$(LIBC3)/${OBJ}/.libs -lc3 -lc3gl
 LDFLAGS += -Wl,-rpath ${SIMAVR}/simavr/${OBJ} -L${SIMAVR}/simavr/${OBJ} 
 LDFLAGS += -L${FTGL}/${OBJ} -lfreetype-gl ${shell freetype-config --libs} 
+LDFLAGS += -lm
 
 include ${SIMAVR}/examples/Makefile.opengl
 
