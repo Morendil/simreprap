@@ -21,30 +21,30 @@ target=	reprap
 firm_src = ${wildcard atmega*.c}
 firmware = ${firm_src:.c=.hex}
 
-SIMAVR	= shared/simavr
+SIMAVR_ROOT	= shared/simavr
 
 IPATH = .
 IPATH += src
-IPATH += ${SIMAVR}/include
-IPATH += ${SIMAVR}/simavr/sim
-IPATH += ${SIMAVR}/examples/parts
-IPATH += ${SIMAVR}/examples/shared
+IPATH += ${SIMAVR_ROOT}/include
+IPATH += ${SIMAVR_ROOT}/simavr/sim
+IPATH += ${SIMAVR_ROOT}/examples/parts
+IPATH += ${SIMAVR_ROOT}/examples/shared
 
 VPATH = src
-VPATH += ${SIMAVR}/examples/parts
-VPATH += ${SIMAVR}/examples/shared
+VPATH += ${SIMAVR_ROOT}/examples/parts
+VPATH += ${SIMAVR_ROOT}/examples/shared
 
 # for the Open Motion Controller board
 CPPFLAGS := -DMOTHERBOARD=91
 CPPFLAGS += ${patsubst %,-I%,${subst :, ,${IPATH}}}
 
 LDFLAGS += -lpthread -lutil -ldl
-LDFLAGS += -Wl,-rpath ${SIMAVR}/simavr/${OBJ} -L${SIMAVR}/simavr/${OBJ} 
+LDFLAGS += -Wl,-rpath ${SIMAVR_ROOT}/simavr/${OBJ} -L${SIMAVR_ROOT}/simavr/${OBJ}
 LDFLAGS += -lm
 
 all: obj ${firmware} ${target}
 
-include ${SIMAVR}/Makefile.common
+include ${SIMAVR_ROOT}/Makefile.common
 
 board = ${OBJ}/${target}.elf
 
@@ -57,12 +57,12 @@ ${board} : ${OBJ}/stepper.o
 ${board} : ${OBJ}/${target}.o
 
 build-simavr:
-	$(MAKE) -C $(SIMAVR) CC="$(CC)" CFLAGS="$(CFLAGS)" build-simavr
+	$(MAKE) -C $(SIMAVR_ROOT) CC="$(CC)" CFLAGS="$(CFLAGS)" build-simavr
 
 ${target}:  build-simavr ${board}
 	@echo $@ done
 
 clean: clean-${OBJ}
 	rm -rf *.a *.axf ${target} *.vcd
-	$(MAKE) -C $(SIMAVR)/simavr CC="$(CC)" CFLAGS="$(CFLAGS)" clean
+	$(MAKE) -C $(SIMAVR_ROOT)/simavr CC="$(CC)" CFLAGS="$(CFLAGS)" clean
 

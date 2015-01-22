@@ -19,8 +19,12 @@
 	along with simavr.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AVR_TIMER_H_
-#define AVR_TIMER_H_
+#ifndef __AVR_TIMER_H__
+#define __AVR_TIMER_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "sim_avr.h"
 
@@ -43,7 +47,7 @@ enum {
 // Get the internal IRQ corresponding to the INT
 #define AVR_IOCTL_TIMER_GETIRQ(_name) AVR_IOCTL_DEF('t','m','r',(_name))
 
-// Waweform generation modes
+// Waveform generation modes
 enum {
 	avr_timer_wgm_none = 0,	// invalid mode
 	avr_timer_wgm_normal,
@@ -84,11 +88,19 @@ typedef struct avr_timer_wgm_t {
 #define AVR_TIMER_WGM_OCPWM() { .kind = avr_timer_wgm_pwm, .top = avr_timer_wgm_reg_ocra }
 #define AVR_TIMER_WGM_ICPWM() { .kind = avr_timer_wgm_pwm, .top = avr_timer_wgm_reg_icr }
 
+typedef struct avr_timer_comp_t {
+		avr_int_vector_t	interrupt;		// interrupt vector
+		struct avr_timer_t	*timer;			// parent timer
+		avr_io_addr_t		r_ocr;			// comparator register low byte
+		avr_io_addr_t		r_ocrh;			// comparator register hi byte
+		avr_regbit_t		com;			// comparator output mode registers
+		avr_regbit_t		com_pin;		// where comparator output is connected
+		uint64_t		comp_cycles;
+} avr_timer_comp_t, *avr_timer_comp_p;
 
 typedef struct avr_timer_t {
 	avr_io_t	io;
 	char name;
-	uint16_t		trace_flags;
 
 	avr_regbit_t	disabled;	// bit in the PRR
 
@@ -97,26 +109,23 @@ typedef struct avr_timer_t {
 
 	avr_regbit_t	wgm[4];
 	avr_timer_wgm_t	wgm_op[16];
+	avr_timer_wgm_t	mode;
+	int		wgm_op_mode_kind;
+	uint32_t	wgm_op_mode_size;
 
-	avr_regbit_t	cs[4];
-	uint8_t			cs_div[16];
 	avr_regbit_t	as2;		// asynchronous clock 32khz
+	avr_regbit_t	cs[4];
+	uint8_t		cs_div[16];
+	uint32_t	cs_div_clock;
+
 	avr_regbit_t	icp;		// input capture pin, to link IRQs
 	avr_regbit_t	ices;		// input capture edge select
 
-	struct {
-		avr_int_vector_t	interrupt;		// interrupt vector
-		avr_io_addr_t		r_ocr;			// comparator register low byte
-		avr_io_addr_t		r_ocrh;			// comparator register hi byte
-		avr_regbit_t		com;			// comparator output mode registers
-		avr_regbit_t		com_pin;		// where comparator output is connected
-		uint64_t			comp_cycles;
-	} comp[AVR_TIMER_COMP_COUNT];
+	avr_timer_comp_t comp[AVR_TIMER_COMP_COUNT];
 
 	avr_int_vector_t overflow;	// overflow
 	avr_int_vector_t icr;	// input capture
 
-	avr_timer_wgm_t	mode;
 	uint64_t		tov_cycles;
 	uint64_t		tov_base;	// when we last were called
 	uint16_t		tov_top;	// current top value to calculate tnct
@@ -124,4 +133,8 @@ typedef struct avr_timer_t {
 
 void avr_timer_init(avr_t * avr, avr_timer_t * port);
 
-#endif /* AVR_TIMER_H_ */
+#ifdef __cplusplus
+};
+#endif
+
+#endif /*__AVR_TIMER_H__*/

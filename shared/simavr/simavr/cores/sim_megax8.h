@@ -64,6 +64,12 @@ struct mcu_t {
 #error SIM_MMCU is not declared
 #endif
 
+/* Termporary hack for mega 324 due to mangled headers */
+#ifdef _AVR_IOM328P_H_
+#undef EFUSE_DEFAULT
+#define EFUSE_DEFAULT 0
+#endif
+
 const struct mcu_t SIM_CORENAME = {
 	.core = {
 		.mmcu = SIM_MMCU,
@@ -73,7 +79,11 @@ const struct mcu_t SIM_CORENAME = {
 		.reset = mx8_reset,
 	},
 	AVR_EEPROM_DECLARE(EE_READY_vect),
+#ifdef RWWSRE
 	AVR_SELFPROG_DECLARE(SPMCSR, SELFPRGEN, SPM_READY_vect),
+#else
+	AVR_SELFPROG_DECLARE_NORWW(SPMCSR, SELFPRGEN, SPM_READY_vect),
+#endif
 	AVR_WATCHDOG_DECLARE(WDTCSR, WDT_vect),
 	.extint = {
 		AVR_EXTINT_DECLARE(0, 'D', 2),
@@ -227,6 +237,8 @@ const struct mcu_t SIM_CORENAME = {
 			[5] = AVR_TIMER_WGM_FASTPWM8(),
 			[6] = AVR_TIMER_WGM_FASTPWM9(),
 			[7] = AVR_TIMER_WGM_FASTPWM10(),
+			[8] = AVR_TIMER_WGM_ICPWM(),
+			[9] = AVR_TIMER_WGM_OCPWM(),
 			[12] = AVR_TIMER_WGM_ICCTC(),
 			[14] = AVR_TIMER_WGM_ICPWM(),
 			[15] = AVR_TIMER_WGM_OCPWM(),
@@ -324,24 +336,7 @@ const struct mcu_t SIM_CORENAME = {
 			}
 		}
 	},
-	.spi = {
-		.disabled = AVR_IO_REGBIT(PRR,PRSPI),
-
-		.r_spdr = SPDR,
-		.r_spcr = SPCR,
-		.r_spsr = SPSR,
-
-		.spe = AVR_IO_REGBIT(SPCR, SPE),
-		.mstr = AVR_IO_REGBIT(SPCR, MSTR),
-
-		.spr = { AVR_IO_REGBIT(SPCR, SPR0), AVR_IO_REGBIT(SPCR, SPR1), AVR_IO_REGBIT(SPSR, SPI2X) },
-		.spi = {
-			.enable = AVR_IO_REGBIT(SPCR, SPIE),
-			.raised = AVR_IO_REGBIT(SPSR, SPIF),
-			.vector = SPI_STC_vect,
-		},
-	},
-
+	AVR_SPI_DECLARE(PRR, PRSPI),
 	.twi = {
 		.disabled = AVR_IO_REGBIT(PRR,PRTWI),
 
@@ -364,6 +359,7 @@ const struct mcu_t SIM_CORENAME = {
 		.twi = {
 			.enable = AVR_IO_REGBIT(TWCR, TWIE),
 			.raised = AVR_IO_REGBIT(TWCR, TWINT),
+			.raise_sticky = 1,
 			.vector = TWI_vect,
 		},
 	},

@@ -19,8 +19,12 @@
 	along with simavr.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-#ifndef AVR_SPI_H_
-#define AVR_SPI_H_
+#ifndef __AVR_SPI_H__
+#define __AVR_SPI_H__
+
+#ifdef __cplusplus
+extern "C" {
+#endif
 
 #include "sim_avr.h"
 
@@ -53,4 +57,27 @@ typedef struct avr_spi_t {
 
 void avr_spi_init(avr_t * avr, avr_spi_t * port);
 
-#endif /* AVR_SPI_H_ */
+#define AVR_SPI_DECLARE(_prr, _prspi) \
+	.spi = { \
+		.disabled = AVR_IO_REGBIT(_prr, _prspi), \
+	\
+		.r_spdr = SPDR, \
+		.r_spcr = SPCR, \
+		.r_spsr = SPSR, \
+	\
+		.spe = AVR_IO_REGBIT(SPCR, SPE), \
+		.mstr = AVR_IO_REGBIT(SPCR, MSTR), \
+	\
+		.spr = { AVR_IO_REGBIT(SPCR, SPR0), AVR_IO_REGBIT(SPCR, SPR1), AVR_IO_REGBIT(SPSR, SPI2X) }, \
+		.spi = { \
+			.enable = AVR_IO_REGBIT(SPCR, SPIE), \
+			.raised = AVR_IO_REGBIT(SPSR, SPIF), \
+			.vector = SPI_STC_vect, \
+		}, \
+	}
+
+#ifdef __cplusplus
+};
+#endif
+
+#endif /*__AVR_SPI_H__*/

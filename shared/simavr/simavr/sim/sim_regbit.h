@@ -43,9 +43,11 @@ extern "C" {
 static inline uint8_t avr_regbit_set(avr_t * avr, avr_regbit_t rb)
 {
 	uint8_t a = rb.reg;
+	uint8_t m;
+
 	if (!a)
 		return 0;
-	uint8_t m = rb.mask << rb.bit;
+	m = rb.mask << rb.bit;
 	avr_core_watch_write(avr, a, avr->data[a] | m);
 	return (avr->data[a] >> rb.bit) & rb.mask;
 }
@@ -53,9 +55,11 @@ static inline uint8_t avr_regbit_set(avr_t * avr, avr_regbit_t rb)
 static inline uint8_t avr_regbit_setto(avr_t * avr, avr_regbit_t rb, uint8_t v)
 {
 	uint8_t a = rb.reg;
+	uint8_t m;
+
 	if (!a)
 		return 0;
-	uint8_t m = rb.mask << rb.bit;
+	m = rb.mask << rb.bit;
 	avr_core_watch_write(avr, a, (avr->data[a] & ~(m)) | ((v << rb.bit) & m));
 	return (avr->data[a] >> rb.bit) & rb.mask;
 }
@@ -66,9 +70,11 @@ static inline uint8_t avr_regbit_setto(avr_t * avr, avr_regbit_t rb, uint8_t v)
 static inline uint8_t avr_regbit_setto_raw(avr_t * avr, avr_regbit_t rb, uint8_t v)
 {
 	uint8_t a = rb.reg;
+	uint8_t m;
+
 	if (!a)
 		return 0;
-	uint8_t m = rb.mask << rb.bit;
+	m = rb.mask << rb.bit;
 	avr_core_watch_write(avr, a, (avr->data[a] & ~(m)) | ((v) & m));
 	return (avr->data[a]) & (rb.mask << rb.bit);
 }
@@ -80,6 +86,19 @@ static inline uint8_t avr_regbit_get(avr_t * avr, avr_regbit_t rb)
 		return 0;
 	//uint8_t m = rb.mask << rb.bit;
 	return (avr->data[a] >> rb.bit) & rb.mask;
+}
+
+/*
+ * Using regbit from value eliminates some of the 
+ * set to test then clear register operations.
+ * makes cheking register bits before setting easier.
+ */
+static inline uint8_t avr_regbit_from_value(avr_t * avr, avr_regbit_t rb, uint8_t value)
+{
+	uint8_t a = rb.reg;
+	if (!a)
+		return 0;
+	return (value >> rb.bit) & rb.mask;
 }
 
 /*
@@ -111,12 +130,29 @@ static inline uint8_t avr_regbit_clear(avr_t * avr, avr_regbit_t rb)
 static inline uint8_t avr_regbit_get_array(avr_t * avr, avr_regbit_t *rb, int count)
 {
 	uint8_t res = 0;
+	int i;
 
-	for (int i = 0; i < count; i++, rb++) if (rb->reg) {
+	for (i = 0; i < count; i++, rb++) if (rb->reg) {
 		uint8_t a = (rb->reg);
 		res |= ((avr->data[a] >> rb->bit) & rb->mask) << i;
 	}
 	return res;
+}
+
+/*
+ * Does the reverse of avr_regbit_get_array
+ */
+static inline void avr_regbit_set_array_from_value(
+	avr_t * avr, 
+	avr_regbit_t * rb, 
+	uint8_t count, 
+	uint8_t value)
+{
+	int i;
+	for (i = 0; i < count; i++, rb++) if (rb->reg) {
+		uint8_t rbv = (value >> (count - i)) & 1;
+		avr_regbit_setto(avr, *rb, rbv);
+	}
 }
 
 #define AVR_IO_REGBIT(_io, _bit) { . reg = (_io), .bit = (_bit), .mask = 1 }

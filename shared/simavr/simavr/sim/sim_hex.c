@@ -51,7 +51,7 @@ int read_hex_string(const char * src, uint8_t * buffer, int maxlen)
     uint8_t * dst = buffer;
     int ls = 0;
     uint8_t b = 0;
-    while (*src && maxlen--) {
+    while (*src && maxlen) {
         char c = *src++;
         switch (c) {
             case 'a' ... 'f':   b = (b << 4) | (c - 'a' + 0xa); break;
@@ -66,6 +66,7 @@ int read_hex_string(const char * src, uint8_t * buffer, int maxlen)
         }
         if (ls & 1) {
             *dst++ = b; b = 0;
+            maxlen--;
         }
         ls++;
     }
@@ -121,7 +122,7 @@ uint8_t * read_ihex_file(const char * fname, uint32_t * dsize, uint32_t * start)
 		}
 		uint16_t addr = (bline[1] << 8) | bline[2];
 		if (base == ~0) {
-			base = addr;	// stadt address
+			base = addr;	// start address
 		}
 		if (addr != base + size) {
 			fprintf(stderr, "%s: %s, offset out of bounds %04x expected %04x\n", __FUNCTION__, fname, addr, base+size);

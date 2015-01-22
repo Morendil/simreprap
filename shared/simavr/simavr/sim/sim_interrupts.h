@@ -37,14 +37,15 @@ typedef struct avr_int_vector_t {
 
 	avr_irq_t		irq;			// raised to 1 when queued, to zero when called
 	uint8_t			pending : 1,	// 1 while scheduled in the fifo
-					trace : 1;		// only for debug of a vector
+					trace : 1,		// only for debug of a vector
+					raise_sticky : 1;	// 1 if the interrupt flag (= the raised regbit) is not cleared
+										// by the hardware when executing the interrupt routine (see TWINT)
 } avr_int_vector_t;
 
 // interrupt vectors, and their enable/clear registers
 typedef struct  avr_int_table_t {
 	avr_int_vector_t * vector[64];
 	uint8_t			vector_count;
-	uint8_t			pending_wait;	// number of cycles to wait for pending
 	avr_int_vector_t * pending[64]; // needs to be >= vectors and a power of two
 	uint8_t			pending_w,
 					pending_r;	// fifo cursors
@@ -96,6 +97,11 @@ avr_irq_t *
 avr_get_interrupt_irq(
 		struct avr_t * avr,
 		uint8_t v);
+
+// Initializes the interrupt table
+void
+avr_interrupt_init(
+		struct avr_t * avr );
 
 // reset the interrupt table and the fifo
 void

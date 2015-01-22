@@ -26,12 +26,13 @@ simavr 		= ..
 IPATH 		+= ${simavr}/include
 IPATH 		+= ${simavr}/simavr/sim
 
-tests_src	= ${wildcard test_*.c}
-tests		= ${patsubst %.c, ${OBJ}/%.tst, ${tests_src}}
+tests_src	:= ${wildcard test_*.c}
 
 all: obj axf tests
 
 include ../Makefile.common
+
+tests		:= ${patsubst %.c, ${OBJ}/%.tst, ${tests_src}}
 
 tests:	${tests}
 	
@@ -57,7 +58,7 @@ run_tests: all
 			num_failed=$$(($$num_failed+1)) ;\
 	    fi ;\
 	done ;\
-	echo "Tests run: $$num_run  Successes: $$(($$num_run-$num_failed)) Failures: $$num_failed"
+	echo "Tests run: $$num_run  Successes: $$(($$num_run-$$num_failed))  Failures: $$num_failed"
 
 clean: clean-${OBJ}
-	rm -f *.axf
+	rm -f *.axf *.vcd
