@@ -34,8 +34,6 @@
 #include "sim_hex.h"
 #include "sim_gdb.h"
 
-#include "reprap_gl.h"
-
 #include "button.h"
 #include "reprap.h"
 #include "arduidiot_pins.h"
@@ -327,10 +325,14 @@ int main(int argc, char *argv[])
 
 	reprap_init(avr, &reprap);
 
-	gl_init(argc, argv);
 	pthread_t run;
 	pthread_create(&run, NULL, avr_run_thread, NULL);
 
-	gl_runloop();
-
+	while(true) {
+		fprintf(stderr, "data: %d %d %d\n",
+				reprap.step_x.position,
+				reprap.step_y.position,
+				reprap.step_z.position);
+		usleep(20000);
+	}
 }
