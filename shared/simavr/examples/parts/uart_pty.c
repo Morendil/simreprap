@@ -191,8 +191,9 @@ uart_pty_thread(
 		}
 		/* DO NOT call this, this create a concurency issue with the
 		 * FIFO that can't be solved cleanly with a memory barrier
-			uart_pty_flush_incoming(p);
-		  */
+		 */
+		uart_pty_flush_incoming(p);
+
 	}
 	return NULL;
 }
