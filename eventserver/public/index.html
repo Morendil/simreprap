@@ -1,0 +1,9 @@
+<div id="content">rien</div>
+
+<script>
+  var div = document.getElementById('content');
+  var source = new EventSource("/events");
+  source.addEventListener('steppers', function(e) {
+    div.innerText = e.data;
+  }, false);
+</script>
