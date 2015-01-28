@@ -1,3 +1,4 @@
+marlin/marlin.elf
 marlin/build-mega2560/
 *.bin
 obj-*
