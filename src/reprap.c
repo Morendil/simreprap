@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
 	avr->aref = avr->avcc = avr->vcc = 5 * 1000;	// needed for ADC
 
 	elf_firmware_t f;
-	const char * fname = "marlin/marlin.elf";
+	const char * fname = "marlin/build/marlin.elf";
 	// try to load an ELF file, before trying the .hex
 	if (elf_read_firmware(fname, &f) == 0) {
 		printf("firmware %s f=%d mmcu=%s\n", fname, (int)f.frequency, f.mmcu);

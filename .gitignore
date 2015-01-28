@@ -1,5 +1,4 @@
-marlin/marlin.elf
-marlin/build-mega2560/
+marlin/build/
 *.bin
 obj-*
 ._*
