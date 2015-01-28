@@ -35,7 +35,10 @@ VPATH += ${SIMAVR_ROOT}/examples/parts
 VPATH += ${SIMAVR_ROOT}/examples/shared
 
 # for the Open Motion Controller board
-CPPFLAGS := -DMOTHERBOARD=91
+CPPFLAGS := -DMOTHERBOARD=33 -D__AVR_ATmega2560__ -DARDUINO=105
+CPPFLAGS += -L/usr/lib/avr -lavr
+CPPFLAGS += -I/usr/share/arduino/hardware/arduino/cores/arduino/
+CPPFLAGS += -I/usr/share/arduino/hardware/arduino/variants/mega/
 CPPFLAGS += ${patsubst %,-I%,${subst :, ,${IPATH}}}
 
 LDFLAGS += -lpthread -lutil -ldl
