@@ -271,7 +271,7 @@ int main(int argc, char *argv[])
 	for (int i = 1; i < argc; i++)
 		if (!strcmp(argv[i], "-d"))
 			debug++;
-	avr = avr_make_mcu_by_name("atmega644");
+	avr = avr_make_mcu_by_name("atmega2560");
 	if (!avr) {
 		fprintf(stderr, "%s: Error creating the AVR core\n", argv[0]);
 		exit(1);
@@ -286,7 +286,7 @@ int main(int argc, char *argv[])
 	avr->aref = avr->avcc = avr->vcc = 5 * 1000;	// needed for ADC
 
 	elf_firmware_t f;
-	const char * fname = "/opt/reprap/tvrrug/Marlin/Marlin/applet/Marlin.elf";
+	const char * fname = "marlin/marlin.elf";
 	// try to load an ELF file, before trying the .hex
 	if (elf_read_firmware(fname, &f) == 0) {
 		printf("firmware %s f=%d mmcu=%s\n", fname, (int)f.frequency, f.mmcu);
