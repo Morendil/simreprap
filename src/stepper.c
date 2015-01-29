@@ -65,7 +65,7 @@ stepper_enable_hook(
 		void * param )
 {
 	stepper_p p = (stepper_p)param;
-	p->enable = !!value;
+	p->enable = value == p->enable_on;
 	printf("%s (%s) %d pos %.4f\n", __func__, p->name,
 			p->enable != 0, p->position / p->steps_per_mm);
 	avr_raise_irq(p->irq + IRQ_STEPPER_ENDSTOP_OUT, p->position == p->endstop);
@@ -78,6 +78,7 @@ stepper_step_hook(
 		void * param )
 {
 	stepper_p p = (stepper_p)param;
+        // fprintf(stderr, "%s %d (%s) %d %d\n", __func__, irq->irq, irq->name, p->enable, value);
 	if (!p->enable)
 		return;
 	if (value)
@@ -87,7 +88,6 @@ stepper_step_hook(
 		p->position = p->endstop;
 	if (p->max_position > 0 && p->position > p->max_position)
 		p->position = p->max_position;
-        fprintf(stderr, "%s %d (%s)\n", __func__, irq->irq, irq->name);
         fprintf(stderr, "data: %d %d %d\n",
                                 reprap.step_x.position,
                                 reprap.step_y.position,
@@ -108,6 +108,7 @@ stepper_init(
 		struct avr_t * avr,
 		stepper_p p,
 		char * name,
+		int enable_on,
 		float steps_per_mm,
 		float start_position,
 		float max_position,
@@ -120,6 +121,7 @@ stepper_init(
 	avr_irq_register_notify(p->irq + IRQ_STEPPER_STEP_IN, stepper_step_hook, p);
 	avr_irq_register_notify(p->irq + IRQ_STEPPER_ENABLE_IN, stepper_enable_hook, p);
 
+	p->enable_on = enable_on;
 	p->steps_per_mm = steps_per_mm;
 	p->position = start_position * p->steps_per_mm;
 	p->max_position = max_position * p->steps_per_mm;

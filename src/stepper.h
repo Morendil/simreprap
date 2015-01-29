@@ -38,6 +38,7 @@ typedef struct stepper_t {
 	avr_irq_t *	irq;		// irq list
 	struct avr_t *avr;		// keep it around so we can pause it
 	char name[32];
+        int enable_on;
 	int enable : 1, dir : 1, trace : 1;
 	double steps_per_mm;
 	uint64_t	position;	// in steps
@@ -51,6 +52,7 @@ stepper_init(
 		struct avr_t * avr,
 		stepper_p p,
 		char * name,
+		int enable_on,
 		float steps_per_mm,
 		float start_position,		// mm
 		float max_position,			// mm
