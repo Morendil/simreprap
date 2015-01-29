@@ -177,7 +177,8 @@ avr_run_thread(
 void
 reprap_init(
 		avr_t * avr,
-		reprap_p r)
+		reprap_p r,
+		ardupin_t * arduidiot)
 {
 	r->avr = avr;
 	uart_pty_init(avr, &r->uart_pty);
@@ -208,48 +209,48 @@ reprap_init(
 			r->therm_hotbed.irq + IRQ_TERM_TEMP_VALUE_IN);
 
 	avr_irq_register_notify(
-			get_ardu_irq(avr, HEATER_0_PIN, arduidiot_644),
+			get_ardu_irq(avr, HEATER_0_PIN, arduidiot),
 			hotend_change_hook, NULL);
 	avr_irq_register_notify(
-			get_ardu_irq(avr, FAN_PIN, arduidiot_644),
+			get_ardu_irq(avr, FAN_PIN, arduidiot),
 			hotend_fan_change_hook, NULL);
 	avr_irq_register_notify(
-			get_ardu_irq(avr, HEATER_BED_PIN, arduidiot_644),
+			get_ardu_irq(avr, HEATER_BED_PIN, arduidiot),
 			hotbed_change_hook, NULL);
 
 	//avr_irq_register_notify()
 	float axis_pp_per_mm[4] = DEFAULT_AXIS_STEPS_PER_UNIT;	// from Marlin!
 	{
-		avr_irq_t * e = get_ardu_irq(avr, X_ENABLE_PIN, arduidiot_644);
-		avr_irq_t * s = get_ardu_irq(avr, X_STEP_PIN, arduidiot_644);
-		avr_irq_t * d = get_ardu_irq(avr, X_DIR_PIN, arduidiot_644);
-		avr_irq_t * m = get_ardu_irq(avr, X_MIN_PIN, arduidiot_644);
+		avr_irq_t * e = get_ardu_irq(avr, X_ENABLE_PIN, arduidiot);
+		avr_irq_t * s = get_ardu_irq(avr, X_STEP_PIN, arduidiot);
+		avr_irq_t * d = get_ardu_irq(avr, X_DIR_PIN, arduidiot);
+		avr_irq_t * m = get_ardu_irq(avr, X_MIN_PIN, arduidiot);
 
 		stepper_init(avr, &r->step_x, "X", X_ENABLE_ON, axis_pp_per_mm[0], 0, 1000, 0);
 		stepper_connect(&r->step_x, s, d, e, m, stepper_endstop_inverted);
 	}
 	{
-		avr_irq_t * e = get_ardu_irq(avr, Y_ENABLE_PIN, arduidiot_644);
-		avr_irq_t * s = get_ardu_irq(avr, Y_STEP_PIN, arduidiot_644);
-		avr_irq_t * d = get_ardu_irq(avr, Y_DIR_PIN, arduidiot_644);
-		avr_irq_t * m = get_ardu_irq(avr, Y_MIN_PIN, arduidiot_644);
+		avr_irq_t * e = get_ardu_irq(avr, Y_ENABLE_PIN, arduidiot);
+		avr_irq_t * s = get_ardu_irq(avr, Y_STEP_PIN, arduidiot);
+		avr_irq_t * d = get_ardu_irq(avr, Y_DIR_PIN, arduidiot);
+		avr_irq_t * m = get_ardu_irq(avr, Y_MIN_PIN, arduidiot);
 
 		stepper_init(avr, &r->step_y, "Y", Y_ENABLE_ON, axis_pp_per_mm[1], 0, 1000, 0);
 		stepper_connect(&r->step_y, s, d, e, m, stepper_endstop_inverted);
 	}
 	{
-		avr_irq_t * e = get_ardu_irq(avr, Z_ENABLE_PIN, arduidiot_644);
-		avr_irq_t * s = get_ardu_irq(avr, Z_STEP_PIN, arduidiot_644);
-		avr_irq_t * d = get_ardu_irq(avr, Z_DIR_PIN, arduidiot_644);
-		avr_irq_t * m = get_ardu_irq(avr, Z_MIN_PIN, arduidiot_644);
+		avr_irq_t * e = get_ardu_irq(avr, Z_ENABLE_PIN, arduidiot);
+		avr_irq_t * s = get_ardu_irq(avr, Z_STEP_PIN, arduidiot);
+		avr_irq_t * d = get_ardu_irq(avr, Z_DIR_PIN, arduidiot);
+		avr_irq_t * m = get_ardu_irq(avr, Z_MIN_PIN, arduidiot);
 
 		stepper_init(avr, &r->step_z, "Z", Z_ENABLE_ON, axis_pp_per_mm[2], 0, 1000, 0);
 		stepper_connect(&r->step_z, s, d, e, m, stepper_endstop_inverted);
 	}
 	{
-		avr_irq_t * e = get_ardu_irq(avr, E0_ENABLE_PIN, arduidiot_644);
-		avr_irq_t * s = get_ardu_irq(avr, E0_STEP_PIN, arduidiot_644);
-		avr_irq_t * d = get_ardu_irq(avr, E0_DIR_PIN, arduidiot_644);
+		avr_irq_t * e = get_ardu_irq(avr, E0_ENABLE_PIN, arduidiot);
+		avr_irq_t * s = get_ardu_irq(avr, E0_STEP_PIN, arduidiot);
+		avr_irq_t * d = get_ardu_irq(avr, E0_DIR_PIN, arduidiot);
 
 		stepper_init(avr, &r->step_e, "E", E_ENABLE_ON, axis_pp_per_mm[3], 0, 0, 0);
 		stepper_connect(&r->step_e, s, d, e, NULL, 0);
@@ -323,7 +324,7 @@ int main(int argc, char *argv[])
 	// I changed Marlin to do a spurious write to the GPIOR0 register so we can trap it
 	avr_register_io_write(avr, MEGA644_GPIOR0, reprap_relief_callback, NULL);
 
-	reprap_init(avr, &reprap);
+	reprap_init(avr, &reprap, arduidiot_2560);
 
 	pthread_t run;
 	pthread_create(&run, NULL, avr_run_thread, NULL);
