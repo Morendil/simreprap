@@ -329,10 +329,6 @@ int main(int argc, char *argv[])
 	pthread_create(&run, NULL, avr_run_thread, NULL);
 
 	while(true) {
-		fprintf(stderr, "data: %d %d %d\n",
-				reprap.step_x.position,
-				reprap.step_y.position,
-				reprap.step_z.position);
 		usleep(20000);
 	}
 }

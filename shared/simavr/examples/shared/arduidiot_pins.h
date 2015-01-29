@@ -39,6 +39,6 @@ get_ardu_irq(
 		int ardupin,
 		ardupin_t pins[]);
 
-extern ardupin_t arduidiot_644[32];
+extern ardupin_t arduidiot_644[100];
 
 #endif

@@ -27,6 +27,9 @@
 #include "sim_time.h"
 #include "stepper.h"
 
+#include "reprap.h"
+extern reprap_t reprap;
+
 static avr_cycle_count_t
 stepper_update_timer(
 		struct avr_t * avr,
@@ -84,6 +87,12 @@ stepper_step_hook(
 		p->position = p->endstop;
 	if (p->max_position > 0 && p->position > p->max_position)
 		p->position = p->max_position;
+        fprintf(stderr, "%s %d (%s)\n", __func__, irq->irq, irq->name);
+        fprintf(stderr, "data: %d %d %d\n",
+                                reprap.step_x.position,
+                                reprap.step_y.position,
+                                reprap.step_z.position);
+
 }
 
 static const char * irq_names[IRQ_STEPPER_COUNT] = {
