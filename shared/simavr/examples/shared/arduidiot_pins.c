@@ -63,7 +63,7 @@ ardupin_t arduidiot_644[32] = {
 	[31] = { .ardupin = 31, .port = 'A', .pin =  0, .analog = 1, .adc = 0 },
 };
 
-ardupin_t arduidiot_2560[70] = {
+ardupin_t arduidiot_2560[86] = {
 	[ 0] = { .ardupin =  0, .port = 'E', .pin =  0 },
 	[ 1] = { .ardupin =  1, .port = 'E', .pin =  1 },
 	[ 2] = { .ardupin =  2, .port = 'E', .pin =  4 },
@@ -76,7 +76,7 @@ ardupin_t arduidiot_2560[70] = {
 	[ 6] = { .ardupin =  6, .port = 'H', .pin =  3 },
 	[ 7] = { .ardupin =  7, .port = 'H', .pin =  4 },
 	[ 8] = { .ardupin =  8, .port = 'H', .pin =  5 },
-	[ 9] = { .ardupin =  9, .port = 'H', 	.pin =  6 },
+	[ 9] = { .ardupin =  9, .port = 'H', .pin =  6 },
 
 	[10] = { .ardupin = 10, .port = 'B', .pin =  4 },
 	[11] = { .ardupin = 11, .port = 'B', .pin =  5 },
@@ -142,13 +142,34 @@ ardupin_t arduidiot_2560[70] = {
         [61] = { .ardupin = 61, .port = 'F', .pin =  7, .analog = 1, .adc = 7 },
 
         [62] = { .ardupin = 62, .port = 'K', .pin =  0, .analog = 1, .adc = 0 },
-        [63] = { .ardupin = 62, .port = 'K', .pin =  1, .analog = 1, .adc = 1 },
-        [64] = { .ardupin = 62, .port = 'K', .pin =  2, .analog = 1, .adc = 2 },
-        [65] = { .ardupin = 62, .port = 'K', .pin =  3, .analog = 1, .adc = 3 },
-        [66] = { .ardupin = 62, .port = 'K', .pin =  4, .analog = 1, .adc = 4 },
-        [67] = { .ardupin = 62, .port = 'K', .pin =  5, .analog = 1, .adc = 5 },
-        [68] = { .ardupin = 62, .port = 'K', .pin =  6, .analog = 1, .adc = 6 },
-        [69] = { .ardupin = 62, .port = 'K', .pin =  7, .analog = 1, .adc = 7 },
+        [63] = { .ardupin = 63, .port = 'K', .pin =  1, .analog = 1, .adc = 1 },
+        [64] = { .ardupin = 64, .port = 'K', .pin =  2, .analog = 1, .adc = 2 },
+        [65] = { .ardupin = 65, .port = 'K', .pin =  3, .analog = 1, .adc = 3 },
+        [66] = { .ardupin = 66, .port = 'K', .pin =  4, .analog = 1, .adc = 4 },
+        [67] = { .ardupin = 67, .port = 'K', .pin =  5, .analog = 1, .adc = 5 },
+        [68] = { .ardupin = 68, .port = 'K', .pin =  6, .analog = 1, .adc = 6 },
+        [69] = { .ardupin = 69, .port = 'K', .pin =  7, .analog = 1, .adc = 7 },
+
+        [70] = { .ardupin = 70, .port = 'G', .pin =  4 },
+        [71] = { .ardupin = 71, .port = 'G', .pin =  3 },
+
+        [72] = { .ardupin = 72, .port = 'J', .pin =  2 },
+        [73] = { .ardupin = 73, .port = 'J', .pin =  3 },
+        [74] = { .ardupin = 74, .port = 'J', .pin =  7 },
+        [75] = { .ardupin = 75, .port = 'J', .pin =  4 },
+        [76] = { .ardupin = 76, .port = 'J', .pin =  5 },
+        [77] = { .ardupin = 77, .port = 'J', .pin =  6 },
+
+        [78] = { .ardupin = 78, .port = 'E', .pin =  2 },
+        [79] = { .ardupin = 79, .port = 'E', .pin =  6 },
+        [80] = { .ardupin = 80, .port = 'E', .pin =  7 },
+
+        [81] = { .ardupin = 81, .port = 'D', .pin =  4 },
+        [82] = { .ardupin = 82, .port = 'D', .pin =  5 },
+        [83] = { .ardupin = 83, .port = 'D', .pin =  6 },
+
+        [84] = { .ardupin = 84, .port = 'H', .pin =  2 },
+        [85] = { .ardupin = 85, .port = 'H', .pin =  7 },
 	
 };
 
