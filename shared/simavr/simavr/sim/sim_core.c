@@ -162,7 +162,7 @@ uint8_t avr_core_watch_read(avr_t *avr, uint16_t addr)
  * if it's an IO register (> 31) also (try to) call any callback that was
  * registered to track changes to that register.
  */
-static inline void _avr_set_r(avr_t * avr, uint8_t r, uint8_t v)
+static inline void _avr_set_r(avr_t * avr, uint16_t r, uint8_t v)
 {
 	REG_TOUCH(avr, r);
 
@@ -206,7 +206,7 @@ inline void _avr_sp_set(avr_t * avr, uint16_t sp)
  */
 static inline void _avr_set_ram(avr_t * avr, uint16_t addr, uint8_t v)
 {
-	if (addr < 256)
+	if (addr < MAX_IOs)
 		_avr_set_r(avr, addr, v);
 	else
 		avr_core_watch_write(avr, addr, v);
