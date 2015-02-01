@@ -158,7 +158,7 @@ uint8_t avr_core_watch_read(avr_t *avr, uint16_t addr)
 }
 
 /*
- * Set a register (r < 256)
+ * Set a register (r < MAX_IOs)
  * if it's an IO register (> 31) also (try to) call any callback that was
  * registered to track changes to that register.
  */
@@ -224,7 +224,7 @@ static inline uint8_t _avr_get_ram(avr_t * avr, uint16_t addr)
 		 */
 		READ_SREG_INTO(avr, avr->data[R_SREG]);
 		
-	} else if (addr > 31 && addr < 256) {
+	} else if (addr > 31 && addr < MAX_IOs) {
 		uint8_t io = AVR_DATA_TO_IO(addr);
 		
 		if (avr->io[io].r.c)
