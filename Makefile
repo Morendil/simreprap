@@ -18,8 +18,6 @@
 
 CC = gcc
 target=	reprap
-firm_src = ${wildcard atmega*.c}
-firmware = ${firm_src:.c=.hex}
 
 SIMAVR_ROOT	= shared/simavr
 
@@ -45,7 +43,7 @@ LDFLAGS += -lpthread -lutil -ldl
 LDFLAGS += -Wl,-rpath ${SIMAVR_ROOT}/simavr/${OBJ} -L${SIMAVR_ROOT}/simavr/${OBJ}
 LDFLAGS += -lm
 
-all: obj ${firmware} ${target}
+all: obj build-marlin ${target}
 
 include ${SIMAVR_ROOT}/Makefile.common
 
@@ -58,6 +56,9 @@ ${board} : ${OBJ}/thermistor.o
 ${board} : ${OBJ}/heatpot.o
 ${board} : ${OBJ}/stepper.o
 ${board} : ${OBJ}/${target}.o
+
+build-marlin:
+	$(MAKE) -C marlin
 
 build-simavr:
 	$(MAKE) -C $(SIMAVR_ROOT) CC="$(CC)" CFLAGS="$(CFLAGS)" build-simavr
